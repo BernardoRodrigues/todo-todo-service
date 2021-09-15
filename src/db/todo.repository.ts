@@ -24,6 +24,10 @@ export class TodoRepository {
         };
     }
 
+    public async checkConnection(): Promise<void> {
+        const { rows } = await this.db.query('select now()')
+    }
+
     public async getAllByUserId(userId: string): Promise<TodoModel[]> {
         try {
             const { rows } = await this.db.query(
@@ -35,7 +39,7 @@ export class TodoRepository {
                 [userId]
             );
             return rows.map(this.mapper);
-        } catch(err) {
+        } catch(err: any) {
             console.error(err);
             if (err.code === 'ECONNREFUSED') {
                 throw new DbNotAvailableError(err.message)
@@ -54,7 +58,7 @@ export class TodoRepository {
             inner join priority as p on (td.priority_id = p.priority_id) 
             where todo_start_date < $1`, [date])
             return rows.map(this.mapper)
-        } catch (err) {
+        } catch (err: any) {
             console.error(err)
             if (err.code === 'ECONNREFUSED') {
                 throw new DbNotAvailableError(err.message)
@@ -91,7 +95,8 @@ export class TodoRepository {
                 `select todo_id as id, user_id as userId, todo_start_date as startDate, todo_end_date as endDate, title, 
                         p.priority_id as priorityValue, p.priority_value as priorityName, td.is_done as isDone, td.is_cancelled as isCancelled 
                         from to_do as td 
-                        inner join priority as p on (td.priority_id = p.priority_id)`
+                        inner join priority as p on (td.priority_id = p.priority_id) 
+                        where is_cancelled = false`
             )
             return rows.map(this.mapper);
         } catch (err) {
@@ -144,7 +149,7 @@ export class TodoRepository {
                 `insert into to_do(user_id, todo_start_date, todo_end_date, title, priority_id) 
                     values ($1, $2, $3, $4, $5) returning todo_id as id`, values)
             return rows[0];
-        } catch (err) {
+        } catch (err: any) {
             //TODO add custom errors
             console.error(err);
             if (err.code === 'ECONNREFUSED') {
@@ -186,7 +191,7 @@ export class TodoRepository {
                         set user_id = $1, todo_start_date = $2, todo_end_date = $3, title = $4, priority_id = $5 
                         where todo_id = $6`, values)
             return rows[0];
-        } catch (err) {
+        } catch (err: any) {
             //TODO add custom> errors
             console.error(err);
             if (err.code === 'ECONNREFUSED') {
@@ -203,7 +208,7 @@ export class TodoRepository {
                 rows
             } = await this.db.query("delete from to_do where id = $1", [id])
             return rows;
-        } catch (err) {
+        } catch (err: any) {
             console.error(err);
             if (err.code === 'ECONNREFUSED') {
                 throw new DbNotAvailableError(err.message)
@@ -230,7 +235,7 @@ export class TodoRepository {
                 [isDone, id]
             )
             return rows;
-        } catch (err) {
+        } catch (err: any) {
             console.error(err);
             if (err.code === 'ECONNREFUSED') {
                 throw new DbNotAvailableError(err.message)
@@ -257,7 +262,7 @@ export class TodoRepository {
                 [isCancelled, id]
             )
             return rows;
-        } catch (err) {
+        } catch (err: any) {
             console.error(err);
             if (err.code === 'ECONNREFUSED') {
                 throw new DbNotAvailableError(err.message)

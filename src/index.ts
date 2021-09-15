@@ -3,20 +3,21 @@
 import { config } from 'dotenv';
 import { resolve } from "path";
 import { readFileSync } from "fs";
-
-console.log(resolve(__dirname, '..', '..', 'environments', `${process.env.NODE_ENV}.env`))
-config(
-    {
-        path: resolve(__dirname, '..', '..', 'environments', `${process.env.NODE_ENV}.env`)
-    }
-)
+if (process.env.NODE_ENV !== 'production') {
+    console.log(resolve(__dirname, '..', '..', 'environments', `${process.env.NODE_ENV}.env`))
+    config(
+        {
+            path: resolve(__dirname, '..', '..', 'environments', `${process.env.NODE_ENV}.env`)
+        }
+    )
+}
 
 import express from "express";
 import logger from 'morgan'
 // import { version } from '../package.json'
 import * as todoRouter from './routes/todo-routes'
 // import { createServer as httpCreateServer } from "http";
-import { createServer } from "https";  
+import { createServer } from "http";  
 import { json } from "body-parser";
 // const createServer = process.env.NODE_ENV === 'production' ? httpsCreateServer : httpCreateServer;
 
@@ -25,10 +26,10 @@ const app = express()
 // console.log("")
 const port = process.env.PORT || 5000;
 const server = createServer(
-    {
-        cert: readFileSync(resolve(__dirname, 'cert', 'todo-service.crt')),
-        key: readFileSync(resolve(__dirname, 'cert', 'todo-service.key')),
-    },
+    // {
+    //     cert: readFileSync(resolve(__dirname, 'cert', 'todo-service.crt')),
+    //     key: readFileSync(resolve(__dirname, 'cert', 'todo-service.key')),
+    // },
     app
         .use(logger('dev'))
         .use(json())
