@@ -16,7 +16,9 @@ const router = express.Router()
 
 const db = new DbConnection(process.env.TODO_DB_URL);
 const todoRep = new TodoRepository(db)
-const instance = axios.create()
+const instance = axios.create(
+    {httpsAgent: new Agent({rejectUnauthorized: false}), proxy: false}
+)
 const getUserIdFromJwt = async (req: any): Promise<string> => {
     if (req.headers.authorization == null) {
         throw new MissingJwtError('jwt is null');
