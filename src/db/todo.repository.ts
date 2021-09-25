@@ -35,7 +35,7 @@ export class TodoRepository {
                 p.priority_id as priorityValue, p.priority_value as priorityName, td.is_done as isDone, td.is_cancelled as isCancelled 
                 from to_do as td 
                 inner join priority as p on (td.priority_id = p.priority_id) 
-                where user_id = $1`,
+                where user_id = $1 and td.is_cancelled = false`,
                 [userId]
             );
             return rows.map(this.mapper);

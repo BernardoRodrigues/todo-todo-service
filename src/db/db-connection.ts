@@ -11,7 +11,7 @@ export class DbConnection {
      */
     constructor(private connection?: string) {
 
-        if (process.env.NODE_ENV === 'prd') {
+        if (process.env.NODE_ENV === 'production') {
             this.pool = new Pool({connectionString: this.connection, ssl:{rejectUnauthorized: false}})
         } else {
 
