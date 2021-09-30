@@ -51,14 +51,14 @@ router.get('/', async (req, res) => {
         return handleError(ex, res)
     } 
 }).post('/', async (req, res) => {
-    const { startDate, endDate, title, priority } = req.body;
+    const { startDate, endDate, title, priority, isDone } = req.body;
     try {
-        const check = checkIfNullOrUndefined(startDate, endDate, title, priority);
+        const check = checkIfNullOrUndefined(startDate, endDate, title, priority, isDone);
         if (check != null) {
             throw new MissingValuesError(`${check} is empty`)
         }
         const userId = await getUserIdFromJwt(req);
-        const id = await todoRep.create({userId, startDate, endDate, title, priority})
+        const id = await todoRep.create({userId, startDate, endDate, title, priority, isDone})
         return res.status(201).json(id);
     } catch(ex) {
         console.error(ex)
@@ -66,14 +66,14 @@ router.get('/', async (req, res) => {
     }
 }).put('/:id', async (req, res) => {
     try {
-        const { startDate, endDate, title, priority } = req.body;
+        const { startDate, endDate, title, priority, isDone } = req.body;
         const { id } = req.params
-        const check = checkIfNullOrUndefined(id, startDate, endDate, title, priority);
+        const check = checkIfNullOrUndefined(id, startDate, endDate, title, priority, isDone);
         if (check != null) {
             throw new MissingValuesError(`${check} is empty`)
         }
         const userId = await getUserIdFromJwt(req);
-        const r = await todoRep.updateTodoValues({id, userId, startDate, endDate, title, priority})
+        const r = await todoRep.updateTodoValues({id, userId, startDate, endDate, title, priority, isDone})
         return res.status(201).json({message: "Success"});
     } catch(ex) {
         console.error(ex)

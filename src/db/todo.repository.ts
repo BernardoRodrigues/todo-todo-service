@@ -127,13 +127,15 @@ export class TodoRepository {
         startDate,
         endDate,
         title,
-        priority
+        priority,
+        isDone
     }: {
         userId: string,
         startDate: Date | string,
         endDate: Date | string,
         title: string,
-        priority: number
+        priority: number,
+        isDone: boolean
     }): Promise <{id: string}> {
         const values = [
             userId,
@@ -146,8 +148,8 @@ export class TodoRepository {
             const {
                 rows
             } = await this.db.query(
-                `insert into to_do(user_id, todo_start_date, todo_end_date, title, priority_id) 
-                    values ($1, $2, $3, $4, $5) returning todo_id as id`, values)
+                `insert into to_do(user_id, todo_start_date, todo_end_date, title, priority_id, is_done) 
+                    values ($1, $2, $3, $4, $5, $6) returning todo_id as id`, values)
             return rows[0];
         } catch (err: any) {
             //TODO add custom errors
@@ -166,14 +168,16 @@ export class TodoRepository {
         startDate,
         endDate,
         title,
-        priority
+        priority,
+        isDone
     }: {
         id: string,
         userId: string,
         startDate: Date | string,
         endDate: Date | string,
         title: string,
-        priority: number
+        priority: number,
+        isDone: boolean
     }): Promise <any> {
         const values = [
             userId,
@@ -181,14 +185,15 @@ export class TodoRepository {
             new Date(endDate),
             title,
             priority,
-            id
+            id,
+            isDone
         ]
         try {
             const {
                 rows
             } = await this.db.query(
                 `update to_do 
-                        set user_id = $1, todo_start_date = $2, todo_end_date = $3, title = $4, priority_id = $5 
+                        set user_id = $1, todo_start_date = $2, todo_end_date = $3, title = $4, priority_id = $5, is_done = $7
                         where todo_id = $6`, values)
             return rows[0];
         } catch (err: any) {
