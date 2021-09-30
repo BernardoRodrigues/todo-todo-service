@@ -84,6 +84,7 @@ router.get('/', async (req, res) => {
     try {
         const { status } = req.body;
         const { id } = req.params
+        console.log(req.body)
         const check = checkIfNullOrUndefined(id, status);
         if (check != null) {
             throw new MissingValuesError(`${check} is empty`)
