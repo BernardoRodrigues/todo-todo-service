@@ -80,7 +80,7 @@ router.get('/', async (req, res) => {
         return handleError(ex, res)
     }
 })
-.put('/status/:id', async (req, res) => {
+.put('/:id/status', async (req, res) => {
     try {
         const { status } = req.body;
         const { id } = req.params
@@ -110,7 +110,7 @@ router.get('/', async (req, res) => {
         console.error(ex);
         return handleError(ex, res);
     }
-}).put('/cancel/:id', async (req, res) => {
+}).put('/:id/cancel', async (req, res) => {
     try {
         const { id } = req.params
         const check = checkIfNullOrUndefined(id);
